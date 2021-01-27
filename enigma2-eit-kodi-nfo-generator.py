@@ -40,7 +40,7 @@ def dump(obj):
   newobj=obj
   if '__dict__' in dir(obj):
     newobj=obj.__dict__
-    if ' object at ' in str(obj) and not newobj.has_key('__type__'):
+    if ' object at ' in str(obj) and '__type__' not in newobj:
       newobj['__type__']=str(obj)
     for attr in newobj:
       newobj[attr]=dump(newobj[attr])
@@ -65,20 +65,20 @@ def dump(obj):
 #           crc = crc & 0xffffffffL
 #   return crc
 
-decoding_charSpecHR = {u'Ć': u'\u0106', u'æ': u'\u0107', u'®': u'\u017D', u'¾': u'\u017E', u'©': u'\u0160', u'¹': u'\u0161', u'Č': u'\u010C', u'è': u'\u010D', u'ð': u'\u0111'}
+decoding_charSpecHR = {'Ć': '\u0106', 'æ': '\u0107', '®': '\u017D', '¾': '\u017E', '©': '\u0160', '¹': '\u0161', 'Č': '\u010C', 'è': '\u010D', 'ð': '\u0111'}
 
-decoding_charSpecCZSK = {u'Ï'+u'C': u'Č',u'Ï'+u'E': u'Ě',u'Ï'+u'L': u'Ľ',u'Ï'+u'N': u'Ň',u'Ï'+u'R': u'Ř',u'Ï'+u'S': u'Š',u'Ï'+u'T': u'Ť',u'Ï'+u'Z': u'Ž',u'Ï'+u'c': u'č',u'Ï'+u'd': u'ď',u'Ï'+u'e': u'ě',u'Ï'+u'l': u'ľ', u'Ï'+u'n': u'ň',
-u'Ï'+u'r': u'ř',u'Ï'+u's': u'š',u'Ï'+u't': u'ť',u'Ï'+u'z': u'ž',u'Ï'+u'D': u'Ď',u'Â'+u'A': u'Á',u'Â'+u'E': u'É',u'Â'+u'I': u'Í',u'Â'+u'O': u'Ó',u'Â'+u'U': u'Ú',u'Â'+u'a': u'á',u'Â'+u'e': u'é',u'Â'+u'i': u'í',u'Â'+u'o': u'ó',
-u'Â'+u'u': u'ú',u'Â'+u'y': u'ý',u'Ã'+u'o': u'ô',u'Ã'+u'O': u'Ô',u'Ê'+u'u': u'ů',u'Ê'+u'U': u'Ů',u'È'+u'A': u'Ä',u'È'+u'E': u'Ë',u'È'+u'I': u'Ï',u'È'+u'O': u'Ö',u'È'+u'U': u'Ü',u'È'+u'Y': u'Ÿ',u'È'+u'a': u'ä',u'È'+u'e': u'ë',
-u'È'+u'i': u'ï',u'È'+u'o': u'ö',u'È'+u'u': u'ü',u'È'+u'y': u'ÿ'}
+decoding_charSpecCZSK = {'Ï'+'C': 'Č','Ï'+'E': 'Ě','Ï'+'L': 'Ľ','Ï'+'N': 'Ň','Ï'+'R': 'Ř','Ï'+'S': 'Š','Ï'+'T': 'Ť','Ï'+'Z': 'Ž','Ï'+'c': 'č','Ï'+'d': 'ď','Ï'+'e': 'ě','Ï'+'l': 'ľ', 'Ï'+'n': 'ň',
+'Ï'+'r': 'ř','Ï'+'s': 'š','Ï'+'t': 'ť','Ï'+'z': 'ž','Ï'+'D': 'Ď','Â'+'A': 'Á','Â'+'E': 'É','Â'+'I': 'Í','Â'+'O': 'Ó','Â'+'U': 'Ú','Â'+'a': 'á','Â'+'e': 'é','Â'+'i': 'í','Â'+'o': 'ó',
+'Â'+'u': 'ú','Â'+'y': 'ý','Ã'+'o': 'ô','Ã'+'O': 'Ô','Ê'+'u': 'ů','Ê'+'U': 'Ů','È'+'A': 'Ä','È'+'E': 'Ë','È'+'I': 'Ï','È'+'O': 'Ö','È'+'U': 'Ü','È'+'Y': 'Ÿ','È'+'a': 'ä','È'+'e': 'ë',
+'È'+'i': 'ï','È'+'o': 'ö','È'+'u': 'ü','È'+'y': 'ÿ'}
 
 def convertCharSpecHR(text):
-    for i, j in decoding_charSpecHR.iteritems():
+    for i, j in decoding_charSpecHR.items():
         text = text.replace(i, j)
     return text
 
 def convertCharSpecCZSK(text):
-    for i, j in decoding_charSpecCZSK.iteritems():
+    for i, j in decoding_charSpecCZSK.items():
         text = text.replace(i, j)
     return text
 
@@ -109,7 +109,7 @@ def language_iso639_2to3(alpha2):
     ret = alpha2
     if alpha2 in LanguageCodes:
         language = LanguageCodes[alpha2]
-        for alpha, name in LanguageCodes.items():
+        for alpha, name in list(LanguageCodes.items()):
             if name == language:
                 if len(alpha) == 3:
                     return alpha
@@ -231,8 +231,8 @@ class EitList():
 					f = open(path, 'rb')
 					#lines = f.readlines()
 					data = f.read()
-				except Exception, e:
-					print("[META] Exception in readEitFile: " + str(e))
+				except Exception as e:
+					print(("[META] Exception in readEitFile: " + str(e)))
 				finally:
 					if f is not None:
 						f.close()
@@ -307,7 +307,7 @@ class EitList():
 								elif byte1=="11": name_event_codepage = 'iso-8859-15'
 								elif byte1=="21": name_event_codepage = 'utf-8'
 								if name_event_codepage:
-									print("[META] Found name_event encoding-type: " + name_event_codepage)
+									print(("[META] Found name_event encoding-type: " + name_event_codepage))
 							short_event_description = ""
 							if not short_event_codepage:
 								try:
@@ -326,7 +326,7 @@ class EitList():
 								elif byte1=="11": short_event_codepage = 'iso-8859-15'
 								elif byte1=="21": short_event_codepage = 'utf-8'
 								if short_event_codepage:
-									print("[META] Found short_event encoding-type: " + short_event_codepage)
+									print(("[META] Found short_event encoding-type: " + short_event_codepage))
 							for i in range (pos+7+event_name_length,pos+length):
 								if str(ord(data[i]))=="10" or int(str(ord(data[i])))>31:
 									short_event_description += data[i]
@@ -363,7 +363,7 @@ class EitList():
 								elif byte1=="11": extended_event_codepage = 'iso-8859-15'
 								elif byte1=="21": extended_event_codepage = 'utf-8'
 								if extended_event_codepage:
-									print("[META] Found extended_event encoding-type: " + extended_event_codepage)
+									print(("[META] Found extended_event encoding-type: " + extended_event_codepage))
 							for i in range (pos+8,pos+length):
 								if str(ord(data[i]))=="10" or int(str(ord(data[i])))>31:
 									extended_event_description += data[i]
@@ -418,13 +418,13 @@ class EitList():
 								encdata = chardet.detect(name_event_descriptor)
 								enc = encdata['encoding'].lower()
 								confidence = str(encdata['confidence'])
-								print("[META] Detected name_event encoding-type: " + enc + " (" + confidence + ")")
+								print(("[META] Detected name_event encoding-type: " + enc + " (" + confidence + ")"))
 								if enc == "utf-8":
 									name_event_descriptor.decode(enc)
 								else:
 									name_event_descriptor = name_event_descriptor.decode(enc).encode('utf-8')
-						except (UnicodeDecodeError, AttributeError), e:
-							print("[META] Exception in readEitFile: " + str(e))
+						except (UnicodeDecodeError, AttributeError) as e:
+							print(("[META] Exception in readEitFile: " + str(e)))
 					self.eit['name'] = name_event_descriptor
 
 					if short_event_descriptor:
@@ -438,13 +438,13 @@ class EitList():
 								encdata = chardet.detect(short_event_descriptor)
 								enc = encdata['encoding'].lower()
 								confidence = str(encdata['confidence'])
-								print("[META] Detected short_event encoding-type: " + enc + " (" + confidence + ")")
+								print(("[META] Detected short_event encoding-type: " + enc + " (" + confidence + ")"))
 								if enc == "utf-8":
 									short_event_descriptor.decode(enc)
 								else:
 									short_event_descriptor = short_event_descriptor.decode(enc).encode('utf-8')
-						except (UnicodeDecodeError, AttributeError), e:
-							print("[META] Exception in readEitFile: " + str(e))
+						except (UnicodeDecodeError, AttributeError) as e:
+							print(("[META] Exception in readEitFile: " + str(e)))
 					self.eit['short_description'] = short_event_descriptor
 
 					if extended_event_descriptor:
@@ -458,13 +458,13 @@ class EitList():
 								encdata = chardet.detect(extended_event_descriptor)
 								enc = encdata['encoding'].lower()
 								confidence = str(encdata['confidence'])
-								print("[META] Detected extended_event encoding-type: " + enc + " (" + confidence + ")")
+								print(("[META] Detected extended_event encoding-type: " + enc + " (" + confidence + ")"))
 								if enc == "utf-8":
 									extended_event_descriptor.decode(enc)
 								else:
 									extended_event_descriptor = extended_event_descriptor.decode(enc).encode('utf-8')
-						except (UnicodeDecodeError, AttributeError), e:
-							print("[META] Exception in readEitFile: " + str(e))
+						except (UnicodeDecodeError, AttributeError) as e:
+							print(("[META] Exception in readEitFile: " + str(e)))
 
 						# This will fix EIT data of RTL group with missing line breaks in extended event description
 						import re
@@ -481,7 +481,7 @@ class EitList():
 
 
 def make_unicode(input):
-    if type(input) != unicode:
+    if type(input) != str:
         input =  input.decode('utf-8')
         return input
     else:
@@ -516,7 +516,7 @@ def readeit(eitfile):
   <plot>{1}</plot>
 </movie>""".format(eitlist.getEitName(), eitlist.getEitDescription())
     #print nfo
-    print nfoname
+    print(nfoname)
 
     with io.open(nfoname,'w',encoding='utf8') as f:
         f.write(make_unicode(nfo))
@@ -530,14 +530,14 @@ def main():
     # parse command line options
     try:
         opts, args = getopt.getopt(sys.argv[1:], "h", ["help"])
-    except getopt.error, msg:
-        print msg
-        print "for help use --help"
+    except getopt.error as msg:
+        print(msg)
+        print("for help use --help")
         sys.exit(2)
     # process options
     for o, a in opts:
         if o in ("-h", "--help"):
-            print __doc__
+            print(__doc__)
             sys.exit(0)
     # process arguments
     for arg in args:
