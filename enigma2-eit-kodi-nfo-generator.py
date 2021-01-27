@@ -514,7 +514,6 @@ def readeit(eitfile):
 
 
 
-
 def main():
     # parse command line options
     try:
@@ -526,7 +525,7 @@ def main():
     # process options
     for o, a in opts:
         if o in ("-h", "--help"):
-            print(__doc__)
+            print("Usage: python3 enigma2-eit-kodi-nfo-generator.py <dir-name1> <dir-name2> ...")
             sys.exit(0)
     # process arguments
     for arg in args:
