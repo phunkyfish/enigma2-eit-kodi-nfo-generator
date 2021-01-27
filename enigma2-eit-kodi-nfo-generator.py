@@ -5,7 +5,7 @@
 # Copyright (C) 2011 betonme
 # Copyright (C) 2016 Wolfgang Fahl
 # Copyright (C) 2018 Marco Hald
-# 
+#
 # This EITParser is based on:
 # https://github.com/betonme/e2openplugin-EnhancedMovieCenter/blob/master/src/EitSupport.py
 #
@@ -56,7 +56,6 @@ def dump(obj):
 #   poly = 0x4c11db7
 #   crc = 0xffffffffL
 #   for byte in data:
-#       byte = ord(byte)
 #       for bit in range(7,-1,-1):  # MSB to LSB
 #           z32 = crc>>31    # top bit
 #           crc = crc << 1
@@ -277,22 +276,22 @@ class EitList():
 					prev1_ISO_639_language_code = "x"
 					prev2_ISO_639_language_code = "x"
 					while pos < endpos:
-						rec = ord(data[pos])
+						rec = data[pos]
 						if pos+1>=endpos:
 							break
-						length = ord(data[pos+1]) + 2
+						length = data[pos+1] + 2
 						if rec == 0x4D:
-							descriptor_tag = ord(data[pos+1])
-							descriptor_length = ord(data[pos+2])
+							descriptor_tag = data[pos+1]
+							descriptor_length = data[pos+2]
 							ISO_639_language_code = str(data[pos+2:pos+5]).upper()
-							event_name_length = ord(data[pos+5])
+							event_name_length = data[pos+5]
 							name_event_description = ""
 							for i in range (pos+6,pos+6+event_name_length):
-								if str(ord(data[i]))=="10" or int(str(ord(data[i])))>31:
-									name_event_description += data[i]
+								if str(data[i])=="10" or int(str(data[i]))>31:
+									name_event_description += chr(data[i])
 							if not name_event_codepage:
 								try:
-									byte1 = str(ord(data[pos+6]))
+									byte1 = str(data[pos+6])
 								except:
 									byte1 = ''
 								if byte1=="1": name_event_codepage = 'iso-8859-5'
@@ -311,7 +310,7 @@ class EitList():
 							short_event_description = ""
 							if not short_event_codepage:
 								try:
-									byte1 = str(ord(data[pos+7+event_name_length]))
+									byte1 = str(data[pos+7+event_name_length])
 								except:
 									byte1 = ''
 								if byte1=="1": short_event_codepage = 'iso-8859-5'
@@ -328,8 +327,8 @@ class EitList():
 								if short_event_codepage:
 									print(("[META] Found short_event encoding-type: " + short_event_codepage))
 							for i in range (pos+7+event_name_length,pos+length):
-								if str(ord(data[i]))=="10" or int(str(ord(data[i])))>31:
-									short_event_description += data[i]
+								if str(data[i])=="10" or int(str(data[i]))>31:
+									short_event_description += chr(data[i])
 							if ISO_639_language_code == lang:
 								short_event_descriptor.append(short_event_description)
 								name_event_descriptor.append(name_event_description)
@@ -343,12 +342,12 @@ class EitList():
 						elif rec == 0x4E:
 							ISO_639_language_code = ""
 							for i in range (pos+3,pos+6):
-								ISO_639_language_code += data[i]
+								ISO_639_language_code += chr(data[i])
 							ISO_639_language_code = ISO_639_language_code.upper()
 							extended_event_description = ""
 							if not extended_event_codepage:
 								try:
-									byte1 = str(ord(data[pos+8]))
+									byte1 = str(data[pos+8])
 								except:
 									byte1 = ''
 								if byte1=="1": extended_event_codepage = 'iso-8859-5'
@@ -365,8 +364,8 @@ class EitList():
 								if extended_event_codepage:
 									print(("[META] Found extended_event encoding-type: " + extended_event_codepage))
 							for i in range (pos+8,pos+length):
-								if str(ord(data[i]))=="10" or int(str(ord(data[i])))>31:
-									extended_event_description += data[i]
+								if str(data[i])=="10" or int(str(data[i]))>31:
+									extended_event_description += chr(data[i])
 							if ISO_639_language_code == lang:
 								extended_event_descriptor.append(extended_event_description)
 							if (ISO_639_language_code == prev2_ISO_639_language_code) or (prev2_ISO_639_language_code == "x"):
