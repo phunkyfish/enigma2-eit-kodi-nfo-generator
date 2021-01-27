@@ -410,58 +410,48 @@ class EitList():
 						try:
 							if name_event_codepage:
 								if name_event_codepage != 'utf-8':
-									name_event_descriptor = name_event_descriptor.decode(name_event_codepage).encode("utf-8")
-								else:
-									name_event_descriptor.decode('utf-8')
+									name_event_descriptor = bytes(name_event_descriptor, 'utf-8').decode(name_event_codepage)
 							else:
-								encdata = chardet.detect(name_event_descriptor)
+								encdata = chardet.detect(bytes(name_event_descriptor, utf-8))
 								enc = encdata['encoding'].lower()
 								confidence = str(encdata['confidence'])
 								print(("[META] Detected name_event encoding-type: " + enc + " (" + confidence + ")"))
-								if enc == "utf-8":
-									name_event_descriptor.decode(enc)
-								else:
-									name_event_descriptor = name_event_descriptor.decode(enc).encode('utf-8')
+								if enc != "utf-8":
+									name_event_descriptor = bytes(name_event_descriptor, 'uts-8').decode(enc)
 						except (UnicodeDecodeError, AttributeError) as e:
 							print(("[META] Exception in readEitFile: " + str(e)))
 					self.eit['name'] = name_event_descriptor
 
 					if short_event_descriptor:
 						try:
+							# if we read this as utf-8 incorrectly change it
 							if short_event_codepage:
 								if short_event_codepage != 'utf-8':
-									short_event_descriptor = short_event_descriptor.decode(short_event_codepage).encode("utf-8")
-								else:
-									short_event_descriptor.decode('utf-8')
+									short_event_descriptor = bytes(short_event_descriptor, 'utf-8').decode(short_event_codepage)
 							else:
-								encdata = chardet.detect(short_event_descriptor)
+								encdata = chardet.detect(bytes(short_event_descriptor, 'utf-8'))
 								enc = encdata['encoding'].lower()
 								confidence = str(encdata['confidence'])
 								print(("[META] Detected short_event encoding-type: " + enc + " (" + confidence + ")"))
-								if enc == "utf-8":
-									short_event_descriptor.decode(enc)
-								else:
-									short_event_descriptor = short_event_descriptor.decode(enc).encode('utf-8')
+								if enc != "utf-8":
+									short_event_descriptor = bytes(short_event_descriptor, 'uts-8').decode(enc)
 						except (UnicodeDecodeError, AttributeError) as e:
 							print(("[META] Exception in readEitFile: " + str(e)))
 					self.eit['short_description'] = short_event_descriptor
 
 					if extended_event_descriptor:
 						try:
+							# if we read this as utf-8 incorrectly change it
 							if extended_event_codepage:
 								if extended_event_codepage != 'utf-8':
-									extended_event_descriptor = extended_event_descriptor.decode(extended_event_codepage).encode("utf-8")
-								else:
-									extended_event_descriptor.decode('utf-8')
+									extended_event_descriptor = bytes(extended_event_descriptor, 'utf-8').decode(extended_event_codepage)
 							else:
-								encdata = chardet.detect(extended_event_descriptor)
+								encdata = chardet.detect(bytes(extended_event_descriptor, 'utf-8'))
 								enc = encdata['encoding'].lower()
 								confidence = str(encdata['confidence'])
 								print(("[META] Detected extended_event encoding-type: " + enc + " (" + confidence + ")"))
-								if enc == "utf-8":
-									extended_event_descriptor.decode(enc)
-								else:
-									extended_event_descriptor = extended_event_descriptor.decode(enc).encode('utf-8')
+								if enc != "utf-8":
+									extended_event_descriptor = bytes(extended_event_descriptor, 'utf-8').decode(enc)
 						except (UnicodeDecodeError, AttributeError) as e:
 							print(("[META] Exception in readEitFile: " + str(e)))
 
